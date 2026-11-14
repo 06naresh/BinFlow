@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, Field, EmailStr
 
 
@@ -7,8 +8,17 @@ class ORMModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# -------------------------
+# Categories
+# -------------------------
+
 class CategoryCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
+    description: str | None = None
+
+
+class CategoryUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=100)
     description: str | None = None
 
 
@@ -17,6 +27,10 @@ class CategoryOut(ORMModel):
     name: str
     description: str | None
 
+
+# -------------------------
+# Products
+# -------------------------
 
 class ProductCreate(BaseModel):
     sku: str = Field(min_length=1, max_length=50)
@@ -28,6 +42,7 @@ class ProductCreate(BaseModel):
 
 
 class ProductUpdate(BaseModel):
+    sku: str | None = Field(default=None, min_length=1, max_length=50)
     name: str | None = Field(default=None, min_length=1, max_length=160)
     description: str | None = None
     category_id: int | None = None
@@ -49,8 +64,19 @@ class ProductOut(ORMModel):
     created_at: datetime
 
 
+# -------------------------
+# Suppliers
+# -------------------------
+
 class SupplierCreate(BaseModel):
     name: str = Field(min_length=1, max_length=160)
+    email: EmailStr | None = None
+    phone: str | None = None
+    address: str | None = None
+
+
+class SupplierUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=160)
     email: EmailStr | None = None
     phone: str | None = None
     address: str | None = None
@@ -64,6 +90,10 @@ class SupplierOut(ORMModel):
     address: str | None
     created_at: datetime
 
+
+# -------------------------
+# Stock receipts and issues
+# -------------------------
 
 class ReceiptItemIn(BaseModel):
     product_id: int
